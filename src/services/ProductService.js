@@ -53,94 +53,80 @@ const updateProduct = (id, data) => {
     }
   });
 };
-const getAllProduct = (newProduct) => {
+const getAllProduct = (limit, page, sort, filter) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, image, type, price, countInStock, rating, description } =
-        newProduct;
-      const checkProduct = await Product.findOne({
-        name: name,
-      });
+      const totalProdcut = await Product.countDocuments();
 
-      if (checkProduct !== null) {
-        resolve({ status: "OK", message: "The name is already" });
+      if (filter) {
+        const label = filter[0];
+        const allObjectFilter = await Product.find({
+          [label]: { $regex: filter[1] },
+        })
+          .limit(limit)
+          .skip(page * limit);
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+          data: allObjectFilter,
+          total: totalProdcut,
+          pageCurrent: Number(page + 1),
+          totalPage: Math.ceil(totalProdcut / limit),
+        });
       }
+      if (sort) {
+        const objectSort = {};
+        objectSort[sort[1]] = sort[0];
+    
+        const allProductSort = await Product.find()
+          .limit(limit)
+          .skip(page * limit)
+          .sort(objectSort);
 
-      var createdProduct = new Product({
-        name,
-        image,
-        type,
-        price,
-        countInStock,
-        rating,
-        description,
-      });
-      createdProduct.save();
-      if (createdProduct) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdProduct });
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+          data: allProductSort,
+          total: totalProdcut,
+          pageCurrent: Number(page + 1),
+          totalPage: Math.ceil(totalProdcut / limit),
+        });
       }
+      const allProduct = await Product.find()
+        .limit(limit)
+        .skip(page * limit);
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: allProduct,
+        total: totalProdcut,
+        pageCurrent: Number(page + 1),
+        totalPage: Math.ceil(totalProdcut / limit),
+      });
     } catch (error) {
       reject(error);
     }
   });
 };
-const getProduct = (newProduct) => {
+const getProduct = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, image, type, price, countInStock, rating, description } =
-        newProduct;
-      const checkProduct = await Product.findOne({
-        name: name,
-      });
-
-      if (checkProduct !== null) {
-        resolve({ status: "OK", message: "The name is already" });
+      const product = await Product.findById(id);
+      if (product === null) {
+        resolve({ status: "OK", message: "The product is not define" });
       }
-
-      var createdProduct = new Product({
-        name,
-        image,
-        type,
-        price,
-        countInStock,
-        rating,
-        description,
-      });
-      createdProduct.save();
-      if (createdProduct) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdProduct });
-      }
+      resolve({ status: "OK", message: "SUCCESS", data: product });
     } catch (error) {
       reject(error);
     }
   });
 };
-const deleteProduct = (newProduct) => {
+const deleteProduct = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, image, type, price, countInStock, rating, description } =
-        newProduct;
-      const checkProduct = await Product.findOne({
-        name: name,
-      });
-
-      if (checkProduct !== null) {
-        resolve({ status: "OK", message: "The name is already" });
-      }
-
-      var createdProduct = new Product({
-        name,
-        image,
-        type,
-        price,
-        countInStock,
-        rating,
-        description,
-      });
-      createdProduct.save();
-      if (createdProduct) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdProduct });
-      }
+      await Product.findByIdAndDelete(id);
+      resolve({ status: "OK", message: "SUCCESS" });
     } catch (error) {
       reject(error);
     }
