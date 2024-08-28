@@ -1,13 +1,12 @@
 const UserService = require("../services/UserService");
-const JWTService = require('../services/JWTService')
+const JWTService = require("../services/JWTService");
 const createUser = async (req, res) => {
   try {
-    // console.log(req.body);
     const { name, email, password, confirmPassword, phone } = req.body;
     const re =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const isCheckEmail = re.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
+    if (!email || !password || !confirmPassword) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is required" });
@@ -47,7 +46,14 @@ const loginUser = async (req, res) => {
     }
 
     const response = await UserService.loginUser(req.body);
-    return res.status(200).json(response);
+    const { refresh_token, ...newResponse } = response;
+    console.log(refresh_token);
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: false,
+      samesite: "strict",
+    });
+    return res.status(200).json(newResponse);
   } catch (error) {
     return res.status(404).json({
       message: error,
@@ -114,13 +120,17 @@ const getDetailUser = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
   try {
-    const token = req.headers.token.split(" ")[1];
+    const token = req.cookies.refresh_token;
+
+    console.log(token);
     if (!token) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The token is required" });
     }
+
     const response = await JWTService.refreshTokenJWT(token);
+
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({

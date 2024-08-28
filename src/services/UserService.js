@@ -20,8 +20,8 @@ const createUser = (newUser) => {
         email,
         password: hash,
         phone,
-        access_token: "1",
-        refresh_token: "1",
+        access_token: "",
+        refresh_token: "",
       });
       createdUser.save();
       if (createdUser) {
