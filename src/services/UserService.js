@@ -4,24 +4,18 @@ const { generalAccessToken, generalRefreshToken } = require("./JWTService");
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, email, password, phone } = newUser;
+      const { email, password } = newUser;
       const checkUser = await User.findOne({
         email: email,
       });
-
       if (checkUser !== null) {
         resolve({ status: "OK", message: "The email is already" });
       }
-
       const hash = bcrypt.hashSync(password, 10);
       console.log(hash);
       const createdUser = new User({
-        name,
         email,
         password: hash,
-        phone,
-        access_token: "",
-        refresh_token: "",
       });
       createdUser.save();
       if (createdUser) {

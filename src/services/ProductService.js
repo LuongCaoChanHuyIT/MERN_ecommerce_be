@@ -3,8 +3,17 @@ const Product = require("../models/ProductModel");
 const createProduct = (newProduct) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const { name, image, type, price, countInStock, rating, description } =
-        newProduct;
+      const {
+        name,
+        image,
+        type,
+        price,
+        countInStock,
+        rating,
+        description,
+        discount,
+        salled,
+      } = newProduct;
       const checkProduct = await Product.findOne({
         name: name,
       });
@@ -21,6 +30,8 @@ const createProduct = (newProduct) => {
         countInStock,
         rating,
         description,
+        discount,
+        salled,
       });
       createdProduct.save();
       if (createdProduct) {
@@ -77,7 +88,7 @@ const getAllProduct = (limit, page, sort, filter) => {
       if (sort) {
         const objectSort = {};
         objectSort[sort[1]] = sort[0];
-    
+
         const allProductSort = await Product.find()
           .limit(limit)
           .skip(page * limit)
