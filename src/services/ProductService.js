@@ -9,7 +9,7 @@ const createProduct = (newProduct) => {
         type,
         price,
         countInStock,
-        rating,
+        rating = 1,
         description,
         discount,
         salled,
@@ -19,23 +19,23 @@ const createProduct = (newProduct) => {
       });
 
       if (checkProduct !== null) {
-        resolve({ status: "OK", message: "The name is already" });
-      }
-
-      var createdProduct = new Product({
-        name,
-        image,
-        type,
-        price,
-        countInStock,
-        rating,
-        description,
-        discount,
-        salled,
-      });
-      createdProduct.save();
-      if (createdProduct) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdProduct });
+        resolve({ status: "ERROR", message: "The name is already" });
+      } else {
+        var createdProduct = new Product({
+          name,
+          image,
+          type,
+          price,
+          countInStock,
+          rating,
+          description,
+          discount,
+          salled,
+        });
+        createdProduct.save();
+        if (createdProduct) {
+          resolve({ status: "OK", message: "SUCCESS", data: createdProduct });
+        }
       }
     } catch (error) {
       reject(error);
