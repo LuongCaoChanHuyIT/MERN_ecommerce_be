@@ -50,7 +50,7 @@ const updateProduct = (id, data) => {
       });
 
       if (checkProduct === null) {
-        resolve({ status: "OK", message: "The name is already" });
+        resolve({ status: "ERROR", message: "The name is already" });
       }
 
       const updatedProduct = await Product.findByIdAndUpdate(id, data, {
