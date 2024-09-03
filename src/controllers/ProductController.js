@@ -21,7 +21,7 @@ const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const data = req.body;
-    console.log(productId);
+   
     if (!productId) {
       return res
         .status(200)
