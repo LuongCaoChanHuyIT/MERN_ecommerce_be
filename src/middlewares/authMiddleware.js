@@ -27,15 +27,16 @@ const authMiddleware = (req, res, next) => {
 const authUserMiddleware = (req, res, next) => {
   const token = req.headers.token?.split(" ")[1];
   const userId = req.params.id;
-  // console.log(token)
-  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+  // console.log(token);
+  jwt.verify(token, process.env.ACCESS_TOKEN, async function (err, user) {
     if (err) {
       return res.status(404).json({
         message: "The authentication 1",
         status: "ERROR",
       });
     }
-    if (user?.isAdmin || user?.id === userId) {
+    const data = await User.findById(user.id);
+    if (data?.isAdmin || data?.id === userId) {
       next();
     } else {
       return res.status(404).json({

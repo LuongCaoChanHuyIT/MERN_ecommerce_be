@@ -6,7 +6,7 @@ const createUser = async (req, res) => {
     const re =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const isCheckEmail = re.test(email);
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password) {
       return res
         .status(200)
         .json({ status: "ERR", message: "The input is required" });
@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
 
     const response = await UserService.loginUser(req.body);
     const { refresh_token, ...newResponse } = response;
-    console.log(refresh_token);
+    // console.log(refresh_token);
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: false,
@@ -64,7 +64,7 @@ const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
     const data = req.body;
-    console.log(data)
+    // console.log(data);
     if (!userId) {
       return res
         .status(200)
