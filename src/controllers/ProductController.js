@@ -21,7 +21,7 @@ const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const data = req.body;
-   
+
     if (!productId) {
       return res
         .status(200)
@@ -81,10 +81,28 @@ const deleteProduct = async (req, res) => {
     });
   }
 };
+const deleteMany = async (req, res) => {
+  try {
+    const ids = req.body;
+
+    if (!ids) {
+      return res
+        .status(200)
+        .json({ status: "ERR", message: "The productId is required" });
+    }
+    const response = await ProductService.deleteMany(ids);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
 module.exports = {
   createProduct,
   updateProduct,
   getAllProduct,
   getProduct,
   deleteProduct,
+  deleteMany,
 };

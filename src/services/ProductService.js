@@ -143,11 +143,21 @@ const deleteProduct = (id) => {
     }
   });
 };
-
+const deleteMany = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Product.deleteMany(ids);
+      resolve({ status: "OK", message: "SUCCESS" });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createProduct,
   updateProduct,
   getAllProduct,
   getProduct,
   deleteProduct,
+  deleteMany,
 };

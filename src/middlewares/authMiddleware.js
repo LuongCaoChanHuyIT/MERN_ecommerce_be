@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
 
     if (err) {
       return res.status(404).json({
-        message: "The authentication",
+        message: "The authentication 1",
         status: "ERROR",
       });
     }
@@ -17,7 +17,7 @@ const authMiddleware = (req, res, next) => {
     if (data.isAdmin) {
       next();
     } else {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "The authentication 2",
         status: "ERROR",
       });
@@ -39,7 +39,7 @@ const authUserMiddleware = (req, res, next) => {
     if (data?.isAdmin || data?.id === userId) {
       next();
     } else {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "The authentication 2",
         status: "ERROR",
       });

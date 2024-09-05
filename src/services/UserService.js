@@ -123,7 +123,17 @@ const getDetailUser = (id) => {
     }
   });
 };
+const deleteMany = (ids) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const res = await User.deleteMany({ _id: ids });
 
+      resolve({ status: "OK", message: "SUCCESS" });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createUser,
   loginUser,
@@ -131,4 +141,5 @@ module.exports = {
   deleteUser,
   getAllUser,
   getDetailUser,
+  deleteMany,
 };
