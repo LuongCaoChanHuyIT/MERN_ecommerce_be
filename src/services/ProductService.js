@@ -103,9 +103,12 @@ const getAllProduct = (limit, page, sort, filter) => {
           totalPage: Math.ceil(totalProdcut / limit),
         });
       }
-      const allProduct = await Product.find()
-        .limit(limit)
-        .skip(page * limit);
+      if (limit) {
+        const allProduct = await Product.find()
+          .limit(limit)
+          .skip(page * limit);
+      }
+      const allProduct = await Product.find();
 
       resolve({
         status: "OK",
@@ -153,6 +156,16 @@ const deleteMany = (id) => {
     }
   });
 };
+const getAllType = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allType = await Product.distinct("type");
+      resolve({ status: "OK", message: "SUCCESS", data: allType });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createProduct,
   updateProduct,
@@ -160,4 +173,5 @@ module.exports = {
   getProduct,
   deleteProduct,
   deleteMany,
+  getAllType,
 };
