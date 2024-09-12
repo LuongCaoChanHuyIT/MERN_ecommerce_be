@@ -14,14 +14,17 @@ const createOrder = (newOrder) => {
         shippingPrice,
         totalPrice,
         user,
+        taxPrice,
       } = newOrder;
       const createdOrder = await Order({
         orderItems,
         shippingAddress: {
-          fullname,
+          fullName: fullname,
+
           address,
           phone,
         },
+        taxPrice,
         paymentMethod,
         itemsPrice,
         shippingPrice,
