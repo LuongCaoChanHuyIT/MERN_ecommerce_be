@@ -13,8 +13,6 @@ const createOrder = async (req, res) => {
       totalPrice,
       user,
     } = req.body;
-    // console.log(req.body);
-
     if (
       !orderItems ||
       !fullname ||
@@ -38,7 +36,23 @@ const createOrder = async (req, res) => {
     });
   }
 };
-
+const getOrderDetails = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res
+        .status(200)
+        .json({ status: "ERR", message: "The userId is required" });
+    }
+    const response = await OrderService.getOrderDetails(userId);
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
 module.exports = {
   createOrder,
+  getOrderDetails,
 };

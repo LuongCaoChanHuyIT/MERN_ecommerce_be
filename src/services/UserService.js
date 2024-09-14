@@ -10,10 +10,9 @@ const createUser = (newUser) => {
         email: email,
       });
       if (checkUser !== null) {
-        resolve({ status: "OK", message: "The email is already" });
+        resolve({ status: "SUCCESS" });
       }
       const hash = bcrypt.hashSync(password, 10);
-      // console.log(hash);
       const createdUser = new User({
         name,
         email,
@@ -24,7 +23,7 @@ const createUser = (newUser) => {
       });
       createdUser.save();
       if (createdUser) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdUser });
+        resolve({ status: "SUCCESS", data: createdUser });
       }
     } catch (error) {
       reject(error);
@@ -46,8 +45,7 @@ const loginUser = (loginUser) => {
         );
         if (!comparePassword) {
           resolve({
-            status: "OK",
-            message: "The password or user is incorrect ",
+            status: "SUCCESS",
           });
         } else {
           const payload = { id: checkUser.id, isAdmin: checkUser.isAdmin };
@@ -55,14 +53,13 @@ const loginUser = (loginUser) => {
           const refresh_token = await generalRefreshToken(payload);
 
           resolve({
-            status: "OK",
-            message: "SUCCESS",
+            status: "SUCCESS",
             access_token,
             refresh_token,
           });
         }
       } else {
-        resolve({ status: "OK", message: "The user is not define" });
+        resolve({ status: "SUCCESS" });
       }
     } catch (error) {
       reject(error);
@@ -74,11 +71,11 @@ const updateUser = (id, data) => {
     try {
       const checkUser = await User.findOne({ _id: id });
       if (checkUser === null) {
-        resolve({ status: "OK", message: "The user is not defined" });
+        resolve({ status: "SUCCESS" });
       }
       const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
 
-      resolve({ status: "OK", message: "SUCCESS", data: updatedUser });
+      resolve({ status: "SUCCESS", data: updatedUser });
     } catch (error) {
       reject(error);
     }
@@ -89,11 +86,11 @@ const deleteUser = (id) => {
     try {
       const checkUser = await User.findOne({ _id: id });
       if (checkUser === null) {
-        resolve({ status: "OK", message: "The user is not defined" });
+        resolve({ status: "SUCCESS" });
       }
       await User.findByIdAndDelete(id);
 
-      resolve({ status: "OK", message: "SUCCESS" });
+      resolve({ status: "SUCCESS" });
     } catch (error) {
       reject(error);
     }
@@ -104,7 +101,7 @@ const getAllUser = () => {
     try {
       const allUser = await User.find();
 
-      resolve({ status: "OK", message: "SUCCESS", data: allUser });
+      resolve({ status: "SUCCESS", data: allUser });
     } catch (error) {
       reject(error);
     }
@@ -115,9 +112,9 @@ const getDetailUser = (id) => {
     try {
       const user = await User.findById(id);
       if (user === null) {
-        resolve({ status: "OK", message: "The user is not define" });
+        resolve({ status: "SUCCESS" });
       }
-      resolve({ status: "OK", message: "SUCCESS", data: user });
+      resolve({ status: "SUCCESS", data: user });
     } catch (error) {
       reject(error);
     }
@@ -128,7 +125,7 @@ const deleteMany = (ids) => {
     try {
       const res = await User.deleteMany({ _id: ids });
 
-      resolve({ status: "OK", message: "SUCCESS" });
+      resolve({ status: "SUCCESS" });
     } catch (error) {
       reject(error);
     }

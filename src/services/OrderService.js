@@ -1,6 +1,5 @@
 const Order = require("../models/OrderModel");
-const bcrypt = require("bcrypt");
-
+const Product = require("../models/ProductModel");
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -16,31 +15,79 @@ const createOrder = (newOrder) => {
         user,
         taxPrice,
       } = newOrder;
-      const createdOrder = await Order({
-        orderItems,
-        shippingAddress: {
-          fullName: fullname,
+      const promies = orderItems.map(async (order) => {
+        const productUpdate = await Product.findOneAndUpdate(
+          {
+            _id: order.product,
+            countInStock: { $gte: order.amount },
+          },
+          { $inc: { countInStock: -order.amount, selled: +order.amount } },
 
-          address,
-          phone,
-        },
-        taxPrice,
-        paymentMethod,
-        itemsPrice,
-        shippingPrice,
-        totalPrice,
-        user: user,
+          { new: true }
+        );
+        if (productUpdate) {
+          const createdOrder = await Order({
+            orderItems,
+            shippingAddress: {
+              fullName: fullname,
+              address,
+              phone,
+            },
+            taxPrice,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            totalPrice,
+            user: user,
+          });
+          createdOrder.save();
+          if (createdOrder) {
+            return {
+              status: "SUCCESS",
+              message: "The create order is success!",
+            };
+          }
+        } else {
+          return {
+            status: "ERR",
+            message: "Insufficient stock",
+            id: order.product,
+          };
+        }
       });
-      createdOrder.save();
-      if (createdOrder) {
-        resolve({ status: "OK", message: "SUCCESS", data: createdOrder });
+      const results = await Promise.all(promies);
+      const newData = results && results.filter((item) => item.id);
+      if (newData.length) {
+        resolve({
+          status: "ERR",
+          message: `Sản phẩm với id${newData.join(",")}đã không đủ hàng`,
+        });
       }
+      resolve({
+        status: "SUCCESS",
+        message: "The create order is success!",
+      });
+      console.log(results);
     } catch (error) {
       reject(error);
     }
   });
 };
+const getOrderDetails = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const order = await Order.findOne({ user: id });
+      if (order === null) {
+        resolve({ status: "ERR", message: "The order is not define" });
+      }
 
+      resolve({ status: "SUCCESS", data: order });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createOrder,
+  getOrderDetails,
 };

@@ -5,11 +5,9 @@ env.config();
 const authMiddleware = (req, res, next) => {
   const token = req.headers.token?.split(" ")[1];
   jwt.verify(token, process.env.ACCESS_TOKEN, async function (err, user) {
-    // console.log(token)
-
     if (err) {
       return res.status(404).json({
-        message: "The authentication 1",
+        message: err,
         status: "ERROR",
       });
     }
@@ -17,8 +15,8 @@ const authMiddleware = (req, res, next) => {
     if (data.isAdmin) {
       next();
     } else {
-      return res.status(200).json({
-        message: "The authentication 2",
+      return res.status(404).json({
+        message: err,
         status: "ERROR",
       });
     }
@@ -27,7 +25,6 @@ const authMiddleware = (req, res, next) => {
 const authUserMiddleware = (req, res, next) => {
   const token = req.headers.token?.split(" ")[1];
   const userId = req.params.id;
-  console.log(token);
   jwt.verify(token, process.env.ACCESS_TOKEN, async function (err, user) {
     if (err) {
       return res.status(404).json({
@@ -39,8 +36,8 @@ const authUserMiddleware = (req, res, next) => {
     if (data?.isAdmin || data?.id === userId) {
       next();
     } else {
-      return res.status(200).json({
-        message: "The authentication 2",
+      return res.status(404).json({
+        message: err,
         status: "ERROR",
       });
     }

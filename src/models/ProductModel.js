@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number },
     description: { type: String },
     discount: { type: Number },
-    selled: { type: Number }, 
+    selled: { type: Number },
   },
   {
     timestamps: true,

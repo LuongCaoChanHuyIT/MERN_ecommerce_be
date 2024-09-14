@@ -9,7 +9,6 @@ const createProduct = async (req, res) => {
         .json({ status: "ERR", message: "The input is required" });
     }
     const response = await ProductService.createProduct(req.body);
-
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
@@ -21,7 +20,6 @@ const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
     const data = req.body;
-
     if (!productId) {
       return res
         .status(200)
@@ -45,7 +43,24 @@ const getAllProduct = async (req, res) => {
       sort,
       filter
     );
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      message: error,
+    });
+  }
+};
+const getProductOption = async (req, res) => {
+  try {
+    const { limit, page, filter, rankValue } = req.query;
 
+    const response = await ProductService.getProductOption(
+      Number(limit),
+      Number(page) || 0,
+      filter,
+      rankValue
+    );
+    // console.log(response);
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
@@ -67,7 +82,6 @@ const getProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-
     if (!productId) {
       return res
         .status(200)
@@ -84,7 +98,6 @@ const deleteProduct = async (req, res) => {
 const deleteMany = async (req, res) => {
   try {
     const ids = req.body;
-
     if (!ids) {
       return res
         .status(200)
@@ -116,4 +129,5 @@ module.exports = {
   deleteProduct,
   deleteMany,
   getAllType,
+  getProductOption,
 };
