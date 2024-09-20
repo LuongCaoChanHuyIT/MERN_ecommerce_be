@@ -122,7 +122,21 @@ const getOrderDetails = (id) => {
     }
   });
 };
+const getAllOrder = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const orders = await Order.find();
+      if (orders === null) {
+        resolve({ status: "ERR", message: "The order is not define" });
+      }
+      resolve({ status: "SUCCESS", data: orders });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 module.exports = {
   createOrder,
   getOrderDetails,
+  getAllOrder,
 };
