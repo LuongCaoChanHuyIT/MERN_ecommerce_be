@@ -20,6 +20,7 @@ const refreshTokenJWT = (token) => {
         if (err) {
           resolve({ status: "ERR", massege: err });
         }
+        console.log(token);
         const access_token = await generalAccessToken({
           id: user?.id,
           idAdmin: user?.idAdmin,

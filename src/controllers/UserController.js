@@ -111,7 +111,7 @@ const getDetailUser = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
   try {
-    const token = req.headers.refresToken.split(" ")[1];
+    const token = req.headers.token.split(" ")[1];
 
     if (!token) {
       return res
@@ -119,6 +119,7 @@ const refreshToken = async (req, res) => {
         .json({ status: "ERR", message: "The token is required" });
     }
     const response = await JWTService.refreshTokenJWT(token);
+
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
