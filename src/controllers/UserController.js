@@ -111,7 +111,7 @@ const getDetailUser = async (req, res) => {
 };
 const refreshToken = async (req, res) => {
   try {
-    const token = req.headers.token.split(" ")[1];
+    const token = req.headers.refresToken.split(" ")[1];
 
     if (!token) {
       return res
